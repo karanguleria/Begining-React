@@ -1,11 +1,8 @@
-import React from 'react'
-interface propsInterface
-{
+import React from "react"
+
+interface userProps  {
   name : string
 }
-
-export default function AnotherComponent( props: propsInterface ) {
-  return (
-    <div>Another Component your name is: {props.name}</div>
-  )
+export default function AnotherComponent(props: userProps) {
+  return <div>Another Component your name is: {props.name}</div>
 }

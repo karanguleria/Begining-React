@@ -5,7 +5,7 @@ import AnotherComponent from './component/AnotherComponent'
 
 export default function Home() {
   const someStyle = {
-    background: "red"
+    background: "red"  
   }
   function increment(){
     setCount(prevCount => prevCount + 1);

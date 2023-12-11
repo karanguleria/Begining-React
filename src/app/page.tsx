@@ -9,26 +9,52 @@ function App() {
     {
       id:1,
       title: "wake up early",
-      isComplet: 1
+      isComplet: true
     },
     {
       id:2,
       title: "Learn something new",
-      isComplet: 0
+      isComplet: false
     },
     {
       id:3,
       title: "work for the health",
-      isComplet: 0
+      isComplet: false
     }
   ])
+  
+  const [todoTile, setTodoTitle] = useState("")
+  const [todoId, setTodoId] = useState(4)
+
+  function handleSubmit(){
+    event?.preventDefault()
+    if(todoTile.trim().length === 0 ){
+      return;
+    }
+    setTodos([...todos,{
+      id:todoId,
+      title: todoTile,
+      isComplet:false
+    }])
+    setTodoId(prevTodoId => prevTodoId + 1 )
+    setTodoTitle("")
+  }
+
+  function handleChange (event:any){
+    setTodoTitle(event.target.value)
+  }
+  function deleteTodo(id: number){
+    setTodos([...todos].filter(todo => todo.id !== id))
+  }
   return (
     <div className="todo-app-container">
       <div className="todo-app">
         <h2>Todo App</h2>
-        <form action="#">
+        <form action="#" onSubmit={handleSubmit}>
           <input
             type="text"
+            value={todoTile}
+            onChange={handleChange}
             className="todo-input"
             placeholder="What do you need to do?"
           />
@@ -42,7 +68,7 @@ function App() {
               <span className="todo-item-label">{todo.title}</span>
               {/* <input type="text" className="todo-item-input" value="Finish React Series" /> */}
             </div>
-            <button className="x-button">
+            <button className="x-button" onClick={() => deleteTodo(todo.id)}>
               <svg
                 className="x-button-icon"
                 fill="none"

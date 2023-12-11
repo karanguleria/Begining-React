@@ -9,17 +9,20 @@ function App() {
     {
       id:1,
       title: "wake up early",
-      isComplet: true
+      isComplet: true,
+      isEditing:false
     },
     {
       id:2,
       title: "Learn something new",
-      isComplet: false
+      isComplet: false,
+      isEditing:false
     },
     {
       id:3,
       title: "work for the health",
-      isComplet: false
+      isComplet: false,
+      isEditing:false
     }
   ])
   
@@ -34,7 +37,8 @@ function App() {
     setTodos([...todos,{
       id:todoId,
       title: todoTile,
-      isComplet:false
+      isComplet:false,
+      isEditing:false
     }])
     setTodoId(prevTodoId => prevTodoId + 1 )
     setTodoTitle("")
@@ -46,6 +50,56 @@ function App() {
   function deleteTodo(id: number){
     setTodos([...todos].filter(todo => todo.id !== id))
   }
+  function editAsTodo(id: number){
+    const editingTodo = todos.map(
+      todo => {
+        if(todo.id == id){
+            todo.isEditing = true 
+        }
+        return todo;
+      })
+      setTodos(editingTodo)
+  }
+  function editingTodo(event: any, id: number){
+    console.log(event.target.value);
+    const UpdatedTodo = todos.map(
+      todo => {
+        if(todo.id == id){
+          if(event.target.value.trim().length == 0 ){
+            todo.isEditing = false;  
+            return todo;
+          }
+          todo.title = event.target.value;
+          todo.isEditing = false;
+        }
+        return todo;
+      }
+    )
+    setTodos(UpdatedTodo);
+  }
+  function completeTodo(id: number){
+    const updatedTodo = todos.map(
+      todo => {
+        if(todo.id == id){
+          todo.isComplet = !todo.isComplet
+        }
+        return todo;
+      }
+    )
+    setTodos(updatedTodo);
+  }
+  function skipEditing(id : number){
+    const updatedTodo = todos.map(
+      todo => {
+        if(todo.id == id ){
+          todo.isEditing = false ;
+        }
+        return todo ;
+      }
+    )
+    setTodos(updatedTodo);
+  }
+
   return (
     <div className="todo-app-container">
       <div className="todo-app">
@@ -64,9 +118,24 @@ function App() {
           { todos.map((todo,index) =>
           <li className="todo-item-container" key={index}>
             <div className="todo-item">
-              <input type="checkbox" />
-              <span className="todo-item-label">{todo.title}</span>
-              {/* <input type="text" className="todo-item-input" value="Finish React Series" /> */}
+              <input type="checkbox" checked={ todo.isComplet ? 'checked' : '' } onChange={() => completeTodo(todo.id)} />
+              { !todo.isEditing ? 
+              (<span className={`todo-item-label ${todo.isComplet ? 'line-through' : '' }`} 
+              onDoubleClick={() => editAsTodo(todo.id) }>{todo.title}</span> )
+               :  
+               (<input type="text" className="todo-item-input" defaultValue={todo.title} 
+               onBlur={(event) => editingTodo(event,todo.id)}
+               onKeyDown={ event => {
+                if(event.key =="Enter"){
+                  editingTodo(event,todo.id)
+                } else if (event.key == "Escape"){
+                  skipEditing(todo.id)
+                }
+               }}
+               autoFocus
+               />
+               )
+            }
             </div>
             <button className="x-button" onClick={() => deleteTodo(todo.id)}>
               <svg
